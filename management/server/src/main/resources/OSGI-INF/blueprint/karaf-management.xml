@@ -32,6 +32,9 @@
             <cm:property name="rmiRegistryPort" value="1099"/>
             <cm:property name="rmiServerHost" value="0.0.0.0"/>
             <cm:property name="rmiServerPort" value="44444"/>
+            <cm:property name="createRmiRegistry" value="true"/>
+            <cm:property name="locateRmiRegistry" value="true"/>
+            <cm:property name="locateExistingMBeanServerIfPossible" value="true"/>
             <cm:property name="jmxRealm" value="karaf"/>
             <cm:property name="serviceUrl" value="service:jmx:rmi://${rmiServerHost}:${rmiServerPort}/jndi/rmi://${rmiRegistryHost}:${rmiRegistryPort}/karaf-$[karaf.name]"/>
             <cm:property name="daemon" value="true"/>
@@ -53,7 +56,7 @@
     <!-- MBeanServer bean -->
     <bean id="mbeanServerFactory" class="org.apache.karaf.management.MBeanServerFactory" init-method="init"
           destroy-method="destroy" depends-on="rmiRegistryFactory">
-        <property name="locateExistingServerIfPossible" value="true"/>
+        <property name="locateExistingServerIfPossible" value="${locateExistingMBeanServerIfPossible}"/>
     </bean>
     <bean id="mbeanServer" factory-ref="mbeanServerFactory" factory-method="getServer"/>
 
@@ -63,8 +66,8 @@
     <!-- Create a RMI registry -->
     <bean id="rmiRegistryFactory" class="org.apache.karaf.management.RmiRegistryFactory" init-method="init"
           destroy-method="destroy">
-        <property name="create" value="true"/>
-        <property name="locate" value="true"/>
+        <property name="create" value="${createRmiRegistry}"/>
+        <property name="locate" value="${locateRmiRegistry}"/>
         <property name="host" value="${rmiRegistryHost}"/>
         <property name="port" value="${rmiRegistryPort}"/>
         <property name="bundleContext" ref="blueprintBundleContext"/>
